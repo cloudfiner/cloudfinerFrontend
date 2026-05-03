@@ -1,0 +1,57 @@
+.app-bg {
+  background: linear-gradient(135deg, #0b0f1a, #111827);
+}
+
+.card {
+  background: #0b0f1a;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.box {
+  background: #111827;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  background: linear-gradient(to right, #7c3aed, #ec4899);
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+
+.arrow {
+  position: absolute;
+  color: #facc15;
+  font-weight: bold;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.hint {
+  color: #9ca3af;
+  margin-top: 10px;
+}

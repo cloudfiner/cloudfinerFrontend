@@ -1,0 +1,163 @@
+.aws-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 18px;
+  border-radius: 999px; /* 🔥 capsule shape */
+
+  font-size: 14px;
+  font-weight: 500;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  background: rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+
+  backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+
+  cursor: pointer;
+}
+
+/* 🔵 default (connect state) */
+.aws-btn:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  transform: translateY(-1px);
+}
+
+/* 🟢 connected state */
+.aws-btn.connected {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+}
+
+/* glow effect */
+.aws-btn.connected:hover {
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+}
+
+/* status dot */
+.aws-btn .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3b82f6;
+}
+
+/* connected dot */
+.aws-btn.connected .dot {
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+
+
+
+
+/* 🔥 Currency Capsule */
+.currency-toggle {
+  display: flex;
+  border-radius: 999px;
+  padding: 3px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.currency-toggle button {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: #94a3b8;
+  background: transparent;
+  transition: all 0.25s ease;
+}
+
+.currency-toggle button:hover {
+  color: #fff;
+}
+
+.currency-toggle button.active {
+  background: linear-gradient(135deg, #1e293b, #020617);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+/* 🔥 Days Dropdown */
+.days-select {
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #e2e8f0;
+  font-size: 14px;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.days-select:hover {
+  border-color: #6366f1;
+}
+
+/* 🔥 Profile Button */
+.profile-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e293b, #020617);
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.profile-btn:hover {
+  box-shadow: 0 0 10px rgba(99,102,241,0.4);
+}
+
+/* 🔥 Dropdown */
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  top: 52px;
+  width: 220px;
+  background: #020617;
+  border-radius: 14px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Email */
+.profile-dropdown .email {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* 🔥 Logout Button (capsule) */
+.logout-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 999px;
+
+  background: rgba(239,68,68,0.1);
+  color: #f87171;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  border: 1px solid rgba(239,68,68,0.2);
+
+  transition: all 0.25s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(239,68,68,0.2);
+  color: #fca5a5;
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(239,68,68,0.3);
+}

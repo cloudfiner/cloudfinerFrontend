@@ -1,0 +1,128 @@
+
+/* 🔥 Base card */
+.premium-card {
+  padding: 20px;
+  border-radius: 18px;
+
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* glow hover */
+.premium-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* subtle gradient overlay */
+.premium-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(99,102,241,0.15), transparent);
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.premium-card:hover::before {
+  opacity: 1;
+}
+
+/* 🔥 Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* 🔥 Value */
+.card-value {
+  font-size: 32px;
+  font-weight: 600;
+  margin-top: 8px;
+  color: #e2e8f0;
+}
+
+/* 🔥 Subtext */
+.card-sub {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* 🔥 Budget */
+.card-budget {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* 🔥 Button */
+.card-btn {
+  margin-top: 14px;
+  padding: 8px 16px;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-size: 13px;
+
+  border: none;
+  transition: all 0.25s ease;
+}
+
+.card-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(99,102,241,0.5);
+}
+
+/* 🔥 Pulse dot */
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+/* 🔥 Insights */
+.insight-item {
+  margin-bottom: 10px;
+}
+
+.insight-type {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.insight-type.red { color: #f87171; }
+.insight-type.yellow { color: #facc15; }
+.insight-type.blue { color: #60a5fa; }
+
+.insight-text {
+  font-size: 13px;
+  color: #cbd5f5;
+}
+
+/* empty */
+.empty {
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* alert variant */
+.premium-card.alert {
+  border-color: rgba(255,255,255,0.05);
+}

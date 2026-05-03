@@ -1,0 +1,44 @@
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.toast {
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.toast.info { background: #2563eb; }
+.toast.warning { background: #f59e0b; }
+.toast.error { background: #dc2626; }
+
+.badge {
+  background: red;
+  color: white;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 50%;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  width: 280px;
+  background: #020617;
+}
+
+.item.unread {
+  background: #1e293b;
+}
+
+@keyframes ring {
+  50% { transform: rotate(12deg); }
+}
+
+.bell-ring {
+  animation: ring 0.4s ease;
+}
