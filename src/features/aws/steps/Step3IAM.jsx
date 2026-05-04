@@ -1,4 +1,4 @@
-import step2 from "@/assets/pointingiam.png";
+import step2 from "@/assets/pointingIam.png";
 
 const Step3IAM = () => (
   <div className="space-y-4">
