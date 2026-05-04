@@ -93,7 +93,7 @@ const Login = () => {
         {/* HEADER */}
         <div className="flex flex-col items-center mb-6">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xl mb-3">
-            ☁️
+            <img src="./cloudfinerlogo.png" alt="CloudFiner Logo" />
           </div>
           <h1 className="text-2xl font-bold">CloudFiner</h1>
           <p className="text-gray-400 text-sm mt-1">Sign in to your account</p>
