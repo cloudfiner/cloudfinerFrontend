@@ -1,8 +1,11 @@
 import axios from "axios";
 import { getAccessToken, setAccessToken, clearTokens } from "./authService";
 
+
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 const api = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 
@@ -36,25 +39,22 @@ api.interceptors.response.use(
       !originalRequest.url.includes("/api/auth/refresh")
     ) {
       originalRequest._retry = true;
+try {
+  const res = await axios.post(
+    `${BASE_URL}/api/auth/refresh`,
+    {},
+    { withCredentials: true }
+  );
 
-      try {
-        const res = await axios.post(
-          "http://localhost:8080/api/auth/refresh",
-          {},
-          { withCredentials: true }
-        );
+  const newToken = res.data.accessToken;
 
-        const newToken = res.data.accessToken;
+  setAccessToken(newToken);
 
-        // ✅ Save new token
-        setAccessToken(newToken);
+  originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+  return api(originalRequest);
 
-        // ✅ Retry original request
-        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-        return api(originalRequest);
-
-      } catch (err) {
-        // ❌ Refresh failed → logout
+} catch (err) {
+        //  Refresh failed → logout
         clearTokens();
         window.location.replace("/login");
 

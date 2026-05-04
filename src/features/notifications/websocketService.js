@@ -1,166 +1,3 @@
-// import SockJS from "sockjs-client";
-// import Stomp from "stompjs";
-// import { getAccessToken } from "@/lib/authService";
-
-// let stompClient = null;
-// let reconnectTimeout = null;
-// let isConnecting = false;
-// let reconnectDelay = 3000;
-// let currentOnMessage = null;
-
-// const TAB_ID = Date.now() + "_" + Math.random();
-
-// let heartbeatInterval = null;
-
-// const startHeartbeat = () => {
-//   stopHeartbeat();
-
-//   heartbeatInterval = setInterval(() => {
-//     if (stompClient && stompClient.connected) {
-//       try {
-//         stompClient.send("/app/ping", {}, "ping");
-//       } catch {}
-//     }
-//   }, 10000);
-// };
-
-// const stopHeartbeat = () => {
-//   if (heartbeatInterval) {
-//     clearInterval(heartbeatInterval);
-//     heartbeatInterval = null;
-//   }
-// };
-
-// const isActiveTab = () => {
-//   return localStorage.getItem("WS_ACTIVE_TAB") === TAB_ID;
-// };
-
-// export const connectWebSocket = (onMessage) => {
-//   const token = getAccessToken();
-
-//   console.log("WS TOKEN:", token);
-
-//   if (!token) {
-//     console.log("No token → skipping WS");
-//     return;
-//   }
-
-//   if (stompClient?.connected || isConnecting) {
-//     console.log("Already connected or connecting...");
-//     return;
-//   }
-
-//   currentOnMessage = onMessage;
-//   isConnecting = true;
-
-//   const socket = new SockJS("http://localhost:8080/ws");
-//   const client = Stomp.over(socket);
-
-//   client.debug = (msg) => {
-//     console.log("STOMP:", msg);
-//   };
-
-//   stompClient = client;
-
-//   client.connect(
-//     { Authorization: `Bearer ${token}` },
-
-//     (frame) => {
-//       console.log("WebSocket Connected", frame);
-
-//       isConnecting = false;
-//       reconnectDelay = 3000;
-
-//       if (reconnectTimeout) {
-//         clearTimeout(reconnectTimeout);
-//         reconnectTimeout = null;
-//       }
-
-//       // Important: do not check client.connected here
-
-//       localStorage.setItem("WS_ACTIVE_TAB", TAB_ID);
-
-//       client.subscribe("/user/queue/alerts", (msg) => {
-//         if (msg.body && currentOnMessage) {
-//           const data = JSON.parse(msg.body);
-//           console.log("WS DATA:", data);
-//           currentOnMessage(data);
-//         }
-//       });
-
-//       startHeartbeat();
-//     },
-
-//     (error) => {
-//       console.log("WebSocket ERROR", error);
-
-//       isConnecting = false;
-//       stopHeartbeat();
-
-//       const token = getAccessToken();
-//       if (!token) return;
-
-//       reconnectTimeout = setTimeout(() => {
-//         connectWebSocket(currentOnMessage);
-//       }, reconnectDelay);
-
-//       reconnectDelay = Math.min(reconnectDelay + 2000, 30000);
-//     }
-//   );
-// };
-
-// export const disconnectWebSocket = () => {
-//   try {
-//     if (stompClient?.connected) {
-//       stompClient.disconnect(() => {
-//         console.log("WebSocket Disconnected");
-//       });
-//     }
-//   } catch {}
-
-//   stompClient = null;
-//   isConnecting = false;
-
-//   stopHeartbeat();
-
-//   if (reconnectTimeout) {
-//     clearTimeout(reconnectTimeout);
-//     reconnectTimeout = null;
-//   }
-
-//   if (isActiveTab()) {
-//     localStorage.removeItem("WS_ACTIVE_TAB");
-//   }
-// };
-
-// // multi-tab sync
-// if (!window.__WS_LISTENER__) {
-//   window.__WS_LISTENER__ = true;
-
-//   window.addEventListener("storage", (event) => {
-//     if (event.key === "WS_ACTIVE_TAB") {
-//       if (!isActiveTab() && stompClient?.connected) {
-//         disconnectWebSocket();
-//       }
-
-//       if (isActiveTab() && !stompClient && currentOnMessage) {
-//         connectWebSocket(currentOnMessage);
-//       }
-//     }
-//   });
-// }
-
-// // cleanup on tab close / refresh
-// window.addEventListener("beforeunload", () => {
-//   if (isActiveTab()) {
-//     localStorage.removeItem("WS_ACTIVE_TAB");
-//   }
-// });
-
-
-
-
-
 
 
 
@@ -176,14 +13,17 @@ let retryCount = 0;
 let currentOnMessage = null;
 
 const TAB_ID = Date.now() + "_" + Math.random();
-const WS_URL = import.meta.env.VITE_WS_URL || "http://localhost:8080/ws";
+
 
 let heartbeatInterval = null;
 
 /* ---------------- BACKEND HEALTH CHECK ---------------- */
+const BASE_URL = import.meta.env.VITE_API_URL;
+const WS_URL = import.meta.env.VITE_WS_URL;
+
 const isBackendAlive = async () => {
   try {
-    const res = await fetch("http://localhost:8080/actuator/health");
+    const res = await fetch(`${BASE_URL}/actuator/health`);
     return res.ok;
   } catch {
     return false;

@@ -6,18 +6,19 @@ const AlertPanel = () => {
 
   useEffect(() => {
 
-    const socket = new WebSocket("ws://localhost:8080/ws");
+    const socket = new WebSocket(import.meta.env.VITE_WS_URL);
 
     socket.onmessage = (event) => {
       const msg = JSON.parse(event.data);
       setAlerts(prev => [msg, ...prev]);
     };
 
+    return () => socket.close(); // 🔥 cleanup (important)
+
   }, []);
 
   return (
     <div className="bg-white/5 p-4 rounded-xl">
-
       <h2 className="mb-3">Live Alerts</h2>
 
       {alerts.map((a, i) => (

@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAccessToken, clearTokens } from "@/lib/authService";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/api/alerts",
+  baseURL: `${import.meta.env.VITE_API_URL}/api/alerts`, // ✅ FIX
   headers: {
     "Content-Type": "application/json",
   },

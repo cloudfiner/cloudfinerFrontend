@@ -1,9 +1,8 @@
 // features/cloud/aws/awsService.js
-
 import axios from "axios";
 import { getAccessToken } from "@/lib/authService";
 
-const API = "http://localhost:8080/api/aws";
+const API = `${import.meta.env.VITE_API_URL}/api/aws`;
 
 export const getSetup = async () => {
   const token = getAccessToken();
