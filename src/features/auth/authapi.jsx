@@ -1,22 +1,27 @@
 import api from "@/lib/api";
 import {
   setAccessToken,
-  setRefreshToken,
   clearTokens,
-  getRefreshToken,
 } from "@/lib/authService";
 
-
+/**
+ * LOGIN USER
+ */
 export const loginUser = async (email, password) => {
   try {
-    const res = await api.post("/api/auth/login", {
-      email,
-      password,
-    });
+    const res = await api.post(
+      "/api/auth/login",
+      {
+        email,
+        password,
+      },
+      {
+        timeout: 30000,
+      }
+    );
 
     const data = res?.data;
 
-    // Validate response
     if (!data || !data.accessToken) {
       return {
         success: false,
@@ -35,7 +40,6 @@ export const loginUser = async (email, password) => {
   } catch (error) {
     console.error("Login error:", error);
 
-    //  Network / server down
     if (!error.response) {
       return {
         success: false,
@@ -43,7 +47,6 @@ export const loginUser = async (email, password) => {
       };
     }
 
-    //  Backend error (like wrong credentials)
     if (error.response?.data?.error) {
       return {
         success: false,
@@ -51,7 +54,6 @@ export const loginUser = async (email, password) => {
       };
     }
 
-    //  Status आधारित fallback
     if (error.response?.status === 401) {
       return {
         success: false,
@@ -59,7 +61,6 @@ export const loginUser = async (email, password) => {
       };
     }
 
-    // Generic fallback
     return {
       success: false,
       message: "Something went wrong. Please try again.",
@@ -67,22 +68,19 @@ export const loginUser = async (email, password) => {
   }
 };
 
-
-
+/**
+ * LOGOUT USER
+ */
 export const logoutUser = async () => {
   try {
-    // cookie automatically जाएगी (withCredentials: true)
     await api.post("/api/auth/logout");
   } catch (e) {
     console.error("Logout error:", e);
   } finally {
     clearTokens();
-
-    // IMPORTANT: history clear
-    window.location.replace("/");
+    window.location.replace("/login"); // safe redirect
   }
 };
-
 
 /**
  * REGISTER USER
@@ -97,35 +95,7 @@ export const registerUser = async (formData) => {
     };
 
   } catch (error) {
-    console.error("Register error:", error);
-    if (!error.response) {
-      return {
-        success: false,
-        message: "Unable to connect to server. Please try again later.",
-      };
-    }
-    if (error.response?.data?.error) {
-      return {
-        success: false,
-        message: error.response.data.error,
-      };
-    }
-    if (error.response?.status === 409) {
-      return {
-        success: false,
-        message: "Email already exists",
-      };
-    }
-    if (error.response?.status === 400) {
-      return {
-        success: false,
-        message: "Invalid input data",
-      };
-    }
-    return {
-      success: false,
-      message: "Registration failed. Please try again.",
-    };
+    return handleError(error, "Registration failed");
   }
 };
 
@@ -142,43 +112,9 @@ export const registerAdmin = async (formData) => {
     };
 
   } catch (error) {
-    console.error("Admin register error:", error);
-
-    if (!error.response) {
-      return {
-        success: false,
-        message: "Unable to connect to server. Please try again later.",
-      };
-    }
-
-    if (error.response?.data?.error) {
-      return {
-        success: false,
-        message: error.response.data.error,
-      };
-    }
-
-    if (error.response?.status === 409) {
-      return {
-        success: false,
-        message: "Admin email already exists",
-      };
-    }
-    if (error.response?.status === 400) {
-      return {
-        success: false,
-        message: "Invalid admin data",
-      };
-    }
-return {
-      success: false,
-      message: "Admin registration failed. Please try again.",
-    };
+    return handleError(error, "Admin registration failed");
   }
 };
-
-
-
 
 /**
  * GET ALL USERS
@@ -187,7 +123,6 @@ export const getAllUsers = async (role, status) => {
   try {
     let url = "/api/auth/admin/users";
 
-    // ✅ Safe query params
     const params = new URLSearchParams();
     if (role) params.append("role", role);
     if (status) params.append("status", status);
@@ -211,9 +146,7 @@ export const getAllUsers = async (role, status) => {
 export const getUserByEmail = async (email) => {
   try {
     const response = await api.get(`/api/auth/${email}`);
-
     return { success: true, data: response.data };
-
   } catch (error) {
     return handleError(error, "Failed to fetch user");
   }
@@ -225,9 +158,7 @@ export const getUserByEmail = async (email) => {
 export const deleteUser = async (id) => {
   try {
     await api.delete(`/api/auth/users/${id}`);
-
     return { success: true };
-
   } catch (error) {
     return handleError(error, "Delete failed");
   }
@@ -239,9 +170,7 @@ export const deleteUser = async (id) => {
 export const activateUser = async (id) => {
   try {
     await api.put(`/api/auth/users/${id}/activate`);
-
     return { success: true };
-
   } catch (error) {
     return handleError(error, "Activation failed");
   }
@@ -253,9 +182,7 @@ export const activateUser = async (id) => {
 export const getLogs = async () => {
   try {
     const response = await api.get("/activitylog/admin/logs");
-
     return { success: true, data: response.data };
-
   } catch (error) {
     return handleError(error, "Failed to fetch logs");
   }
@@ -267,9 +194,7 @@ export const getLogs = async () => {
 export const changePassword = async (form) => {
   try {
     const response = await api.post("/api/auth/change-password", form);
-
     return { success: true, data: response.data };
-
   } catch (error) {
     return handleError(error, "Change password failed");
   }
@@ -281,9 +206,7 @@ export const changePassword = async (form) => {
 export const forgotPassword = async (email) => {
   try {
     const response = await api.post("/api/auth/forgot-password", { email });
-
     return { success: true, data: response.data };
-
   } catch (error) {
     return handleError(error, "Forgot password failed");
   }
@@ -295,9 +218,7 @@ export const forgotPassword = async (email) => {
 export const resetPassword = async (form) => {
   try {
     const response = await api.post("/api/auth/reset-password", form);
-
     return { success: true, data: response.data };
-
   } catch (error) {
     return handleError(error, "Reset password failed");
   }

@@ -4,6 +4,8 @@ import { getAccessToken, clearAccessToken } from "@/lib/authService";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+
+  const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
   const [role, setRole] = useState(null);
 
@@ -13,6 +15,7 @@ export const AuthProvider = ({ children }) => {
 
     if (storedToken) setToken(storedToken);
     if (storedRole) setRole(storedRole);
+    setLoading(false);
   }, []);
 
   const login = (newToken, newRole) => {
@@ -35,7 +38,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, role, login, logout }}>
+ <AuthContext.Provider value={{ token, role, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

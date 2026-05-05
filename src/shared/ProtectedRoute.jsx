@@ -1,16 +1,20 @@
 import { Navigate } from "react-router-dom";
-import { getAccessToken } from "@/lib/authService";
+import { useAuth } from "@/context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
+  const { token, loading } = useAuth();
 
-  const token = getAccessToken();
-
-  // ✅ No token → demo user → allow
-  if (!token) {
-    return children;
+  //  wait until auth loaded
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  // ✅ Token present → real user → allow
+  // no token → go login
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // ✔️ token → allow
   return children;
 };
 
