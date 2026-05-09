@@ -16,7 +16,7 @@ export const loginUser = async (email, password) => {
         password,
       },
       {
-        timeout: 30000,
+        timeout: 60000,
       }
     );
 
