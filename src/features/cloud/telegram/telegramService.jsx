@@ -43,6 +43,11 @@ api.interceptors.response.use(
 
 // ================= TELEGRAM APIs =================
 
+import api from "@/lib/api";
+import { getAccessToken } from "@/lib/authService";
+
+// ================= TELEGRAM APIs =================
+
 // 🔹 CONNECT TELEGRAM
 export const connectTelegram = async () => {
   const token = getAccessToken();
@@ -52,7 +57,7 @@ export const connectTelegram = async () => {
     const res = await api.get("/api/telegram/connect");
     return res.data;
   } catch (err) {
-    console.error("Connect error:", err);
+    console.error("Connect error:", err.message);
     return null;
   }
 };
@@ -66,7 +71,7 @@ export const checkTelegramStatus = async () => {
     const res = await api.get("/api/telegram/status");
     return res.data;
   } catch (err) {
-    console.error("Status error:", err);
+    console.error("Status error:", err.message);
     return { connected: false };
   }
 };
@@ -80,7 +85,7 @@ export const disconnectTelegram = async () => {
     const res = await api.put("/api/telegram/disconnect");
     return res.data;
   } catch (err) {
-    console.error("Disconnect error:", err);
+    console.error("Disconnect error:", err.message);
     return null;
   }
 };

@@ -63,13 +63,13 @@ const AwsConnectPage = () => {
     }
   }, [step]);
 
-  // 🔥 AUTO FETCH (TOKEN BASED)
+  //  AUTO FETCH (TOKEN BASED)
   useEffect(() => {
     if (!token) return;
     fetchSetup();
   }, [token]);
 
-  // 🔥 PRODUCTION FETCH
+  //  PRODUCTION FETCH
   const fetchSetup = async () => {
     try {
       setLoadingSetup(true);

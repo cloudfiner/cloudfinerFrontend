@@ -42,19 +42,21 @@ api.interceptors.response.use(
 
 // ================= API METHODS =================
 
+// ================= ALERT APIs =================
+
 // 🔹 GET ALERTS
 export const getAlerts = async () => {
   try {
     const token = getAccessToken();
     const type = token ? "real" : "demo";
 
-    const res = await api.get("/all", {
+    const res = await api.get("/api/alerts/all", {
       params: { type },
     });
 
     return res.data?.data || [];
   } catch (error) {
-    console.error("Failed to fetch alerts:", error);
+    console.error("Failed to fetch alerts:", error.message);
     return [];
   }
 };
@@ -65,13 +67,13 @@ export const createAlert = async (threshold) => {
     const token = getAccessToken();
     const type = token ? "real" : "demo";
 
-    const res = await api.post("/create", null, {
+    const res = await api.post("/api/alerts/create", null, {
       params: { threshold, type },
     });
 
     return res.data?.data || null;
   } catch (error) {
-    console.error("Create alert failed:", error);
+    console.error("Create alert failed:", error.message);
     return null;
   }
 };
@@ -82,13 +84,13 @@ export const deleteAlert = async (id) => {
     const token = getAccessToken();
     const type = token ? "real" : "demo";
 
-    await api.delete(`/delete/${id}`, {
+    await api.delete(`/api/alerts/delete/${id}`, {
       params: { type },
     });
 
     return true;
   } catch (error) {
-    console.error("Delete alert failed:", error);
+    console.error("Delete alert failed:", error.message);
     return false;
   }
 };
@@ -99,13 +101,13 @@ export const toggleAlert = async (id) => {
     const token = getAccessToken();
     const type = token ? "real" : "demo";
 
-    const res = await api.put(`/${id}/toggle`, null, {
+    const res = await api.put(`/api/alerts/${id}/toggle`, null, {
       params: { type },
     });
 
     return res.data?.data || null;
   } catch (error) {
-    console.error("Toggle alert failed:", error);
+    console.error("Toggle alert failed:", error.message);
     return null;
   }
 };

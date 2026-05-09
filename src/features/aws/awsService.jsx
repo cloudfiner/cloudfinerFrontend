@@ -1,33 +1,22 @@
 // features/cloud/aws/awsService.js
-import axios from "axios";
-import { getAccessToken } from "@/lib/authService";
-
-const API = `${import.meta.env.VITE_API_URL}/api/aws`;
+import api from "@/lib/api";
 
 export const getSetup = async () => {
-  const token = getAccessToken();
-
-  const res = await axios.get(`${API}/setup`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return res.data;
+  try {
+    const res = await api.get("/api/aws/setup");
+    return res.data;
+  } catch (err) {
+    console.error("AWS Setup fetch failed:", err.message);
+    return null;
+  }
 };
 
 export const connectAws = async (roleArn) => {
-  const token = getAccessToken();
-
-  const res = await axios.post(
-    `${API}/connect`,
-    { roleArn },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  return res.data;
+  try {
+    const res = await api.post("/api/aws/connect", { roleArn });
+    return res.data;
+  } catch (err) {
+    console.error("AWS Connect failed:", err.message);
+    return null;
+  }
 };

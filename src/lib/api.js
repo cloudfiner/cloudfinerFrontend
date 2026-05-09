@@ -1,7 +1,6 @@
 import axios from "axios";
 import { getAccessToken, setAccessToken, clearTokens } from "./authService";
 
-
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
@@ -14,7 +13,6 @@ api.interceptors.request.use(
   (config) => {
     const token = getAccessToken();
 
-    // ✅ Token present → send Authorization
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -30,34 +28,39 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    console.log("INTERCEPTOR ERROR:", error.response?.status);
+    // ✅ Network error check (server down / timeout)
+    if (!error.response) {
+      console.error("Network error:", error.message);
+      return Promise.reject(error);
+    }
+
+    console.log("INTERCEPTOR ERROR:", error.response.status);
 
     // 🔒 401 → try refresh token
     if (
-      error.response?.status === 401 &&
+      error.response.status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url.includes("/api/auth/refresh")
     ) {
       originalRequest._retry = true;
-try {
-  const res = await axios.post(
-    `${BASE_URL}/api/auth/refresh`,
-    {},
-    { withCredentials: true }
-  );
 
-  const newToken = res.data.accessToken;
+      try {
+        const res = await api.post(
+          "/api/auth/refresh",
+          {},
+          { withCredentials: true }
+        );
 
-  setAccessToken(newToken);
+        const newToken = res.data.accessToken;
 
-  originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-  return api(originalRequest);
+        setAccessToken(newToken);
 
-} catch (err) {
-        //  Refresh failed → logout
+        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+        return api(originalRequest);
+
+      } catch (err) {
         clearTokens();
         window.location.replace("/login");
-
         return Promise.reject(err);
       }
     }
