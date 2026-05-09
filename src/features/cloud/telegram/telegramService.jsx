@@ -41,10 +41,6 @@ api.interceptors.response.use(
   }
 );
 
-// ================= TELEGRAM APIs =================
-
-import api from "@/lib/api";
-import { getAccessToken } from "@/lib/authService";
 
 // ================= TELEGRAM APIs =================
 
