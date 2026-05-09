@@ -6,37 +6,32 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 const api = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
+  timeout: 60000,
 });
 
-// 🔹 Request interceptor
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = getAccessToken();
-
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
-
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// 🔹 Response interceptor
+// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // ✅ Network error check (server down / timeout)
     if (!error.response) {
       console.error("Network error:", error.message);
       return Promise.reject(error);
     }
 
-    console.log("INTERCEPTOR ERROR:", error.response.status);
-
-    // 🔒 401 → try refresh token
     if (
       error.response.status === 401 &&
       !originalRequest._retry &&
@@ -45,19 +40,11 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const res = await api.post(
-          "/api/auth/refresh",
-          {},
-          { withCredentials: true }
-        );
-
+        const res = await api.post("/api/auth/refresh", {}, { withCredentials: true });
         const newToken = res.data.accessToken;
-
         setAccessToken(newToken);
-
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
         return api(originalRequest);
-
       } catch (err) {
         clearTokens();
         window.location.replace("/login");
@@ -68,5 +55,11 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const warmUpServer = async () => {
+  try {
+    await api.get("/api/health");
+  } catch (_) {}
+};
 
 export default api;
