@@ -1,8 +1,9 @@
 
 
 
+
 // import SockJS from "sockjs-client";
-// import Stomp from "stompjs";
+// import { Client } from '@stomp/stompjs';
 // import { getAccessToken } from "@/lib/authService";
 
 // let stompClient = null;
@@ -14,16 +15,23 @@
 
 // const TAB_ID = Date.now() + "_" + Math.random();
 
-
 // let heartbeatInterval = null;
 
-// /* ---------------- BACKEND HEALTH CHECK ---------------- */
+// /* ---------------- ENV ---------------- */
 // const BASE_URL = import.meta.env.VITE_API_URL;
 // const WS_URL = import.meta.env.VITE_WS_URL;
 
+// /* ---------------- BACKEND HEALTH CHECK ---------------- */
 // const isBackendAlive = async () => {
 //   try {
-//     const res = await fetch(`${BASE_URL}/actuator/health`);
+//     const controller = new AbortController();
+//     const timeout = setTimeout(() => controller.abort(), 5000);
+
+//     const res = await fetch(`${BASE_URL}/actuator/health`, {
+//       signal: controller.signal,
+//     });
+
+//     clearTimeout(timeout);
 //     return res.ok;
 //   } catch {
 //     return false;
@@ -35,7 +43,7 @@
 //   stopHeartbeat();
 
 //   heartbeatInterval = setInterval(() => {
-//     if (stompClient && stompClient.connected) {
+//     if (stompClient?.connected) {
 //       try {
 //         stompClient.send("/app/ping", {}, "ping");
 //       } catch {}
@@ -93,7 +101,7 @@
 //   const socket = new SockJS(WS_URL);
 //   const client = Stomp.over(socket);
 
-//   // Reduce noise in production
+//   // Silent in production
 //   client.debug = () => {};
 
 //   stompClient = client;
@@ -101,6 +109,7 @@
 //   client.connect(
 //     { Authorization: `Bearer ${token}` },
 
+//     // ✅ ON CONNECT
 //     (frame) => {
 //       console.log("WebSocket Connected");
 
@@ -117,14 +126,19 @@
 
 //       client.subscribe("/user/queue/alerts", (msg) => {
 //         if (msg.body && currentOnMessage) {
-//           const data = JSON.parse(msg.body);
-//           currentOnMessage(data);
+//           try {
+//             const data = JSON.parse(msg.body);
+//             currentOnMessage(data);
+//           } catch (e) {
+//             console.error("WS message parse failed:", e.message);
+//           }
 //         }
 //       });
 
 //       startHeartbeat();
 //     },
 
+//     // ✅ ON ERROR
 //     async (error) => {
 //       console.log("WebSocket ERROR:", error?.message || error);
 
@@ -132,7 +146,10 @@
 //       stopHeartbeat();
 
 //       const token = getAccessToken();
-//       if (!token) return;
+//       if (!token) {
+//         console.log("No token → stop reconnect");
+//         return;
+//       }
 
 //       if (retryCount >= 10) {
 //         console.log("Max retries reached → stopping reconnect");
@@ -145,6 +162,7 @@
 //       }
 
 //       retryCount++;
+//       console.log(`Reconnecting... attempt ${retryCount} in ${reconnectDelay}ms`);
 
 //       reconnectTimeout = setTimeout(() => {
 //         connectWebSocket(currentOnMessage);
@@ -207,8 +225,14 @@
 
 
 
+
+
+
+
+
+
 import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+import { Client } from "@stomp/stompjs";
 import { getAccessToken } from "@/lib/authService";
 
 let stompClient = null;
@@ -250,7 +274,7 @@ const startHeartbeat = () => {
   heartbeatInterval = setInterval(() => {
     if (stompClient?.connected) {
       try {
-        stompClient.send("/app/ping", {}, "ping");
+        stompClient.publish({ destination: "/app/ping", body: "ping" });
       } catch {}
     }
   }, 10000);
@@ -303,19 +327,16 @@ export const connectWebSocket = async (onMessage) => {
   currentOnMessage = onMessage;
   isConnecting = true;
 
-  const socket = new SockJS(WS_URL);
-  const client = Stomp.over(socket);
+  const client = new Client({
+    webSocketFactory: () => new SockJS(WS_URL),
 
-  // Silent in production
-  client.debug = () => {};
+    connectHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
 
-  stompClient = client;
+    debug: () => {},
 
-  client.connect(
-    { Authorization: `Bearer ${token}` },
-
-    // ✅ ON CONNECT
-    (frame) => {
+    onConnect: () => {
       console.log("WebSocket Connected");
 
       isConnecting = false;
@@ -343,9 +364,8 @@ export const connectWebSocket = async (onMessage) => {
       startHeartbeat();
     },
 
-    // ✅ ON ERROR
-    async (error) => {
-      console.log("WebSocket ERROR:", error?.message || error);
+    onStompError: async (frame) => {
+      console.log("WebSocket ERROR:", frame?.headers?.message || frame);
 
       isConnecting = false;
       stopHeartbeat();
@@ -374,17 +394,23 @@ export const connectWebSocket = async (onMessage) => {
       }, reconnectDelay);
 
       reconnectDelay = Math.min(reconnectDelay + 2000, 30000);
-    }
-  );
+    },
+
+    onDisconnect: () => {
+      console.log("WebSocket Disconnected");
+      stopHeartbeat();
+    },
+  });
+
+  stompClient = client;
+  client.activate();
 };
 
 /* ---------------- DISCONNECT ---------------- */
 export const disconnectWebSocket = () => {
   try {
     if (stompClient?.connected) {
-      stompClient.disconnect(() => {
-        console.log("WebSocket Disconnected");
-      });
+      stompClient.deactivate();
     }
   } catch {}
 
