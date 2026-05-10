@@ -66,6 +66,11 @@ function App() {
             />
 
             <Route
+          path="/demo"
+           element={<Dashboard />}
+            />
+
+            <Route
               path="/analytics"
               element={
                 <ProtectedRoute>

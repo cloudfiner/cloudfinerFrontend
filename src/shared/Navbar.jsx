@@ -64,10 +64,14 @@ const Navbar = () => {
       <div className="ms-auto d-flex align-items-center gap-3">
 
         {/* Dashboard */}
-        <Link to="/dashboard" className="text-white text-decoration-none">
-          <i className="bi bi-speedometer2 me-1"></i>
-          Dashboard
-        </Link>
+        {/* Dashboard */}
+<Link
+  to={isDemo ? "/demo" : "/dashboard"}
+  className="text-white text-decoration-none"
+>
+  <i className="bi bi-speedometer2 me-1"></i>
+  Dashboard
+</Link>
 
         {/* Admin */}
         {!isDemo && role === "ROLE_ADMIN" && (
