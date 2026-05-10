@@ -58,8 +58,11 @@ api.interceptors.response.use(
 
 export const warmUpServer = async () => {
   try {
-    await api.get("/api/health");
+
+    await api.get("/api/health", {
+      withCredentials: false
+    });
+
   } catch (_) {}
 };
-
 export default api;
