@@ -15,13 +15,13 @@ const features = [
     glow: "shadow-orange-500/30",
     icon: "🚨",
   },
-  {
-    title: "WhatsApp Alerts",
-    desc: "Receive daily cloud cost updates directly on WhatsApp instantly.",
-    color: "from-green-500 to-emerald-500",
-    glow: "shadow-green-500/30",
-    icon: "📲",
-  },
+{
+  title: "Telegram Alerts",
+  desc: "Receive instant cloud cost updates directly on Telegram anytime.",
+  color: "from-sky-500 to-blue-500",
+  glow: "shadow-sky-500/30",
+  icon: "📨",
+},
   {
     title: "Simple Insights",
     desc: "Understand your cloud bill in simple language without complexity.",
