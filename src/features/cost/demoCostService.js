@@ -7,7 +7,7 @@ import { normalizeCostResponse } from "./costNormalizer";
 // CONSTANTS
 // =========================
 const BASE_URL = "/api/cost/demo";
-const TIMEOUT = 10000;
+const TIMEOUT = 30000;
 const MAX_RETRIES = 2;
 
 // =========================
@@ -38,7 +38,7 @@ const withRetry = async (fn) => {
       }
 
       log.warn(`Retrying... attempt ${attempt + 1}`);
-      await sleep(500 * (attempt + 1));
+      await sleep(2000 * (attempt + 1));
       attempt++;
     }
   }

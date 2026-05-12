@@ -26,6 +26,8 @@ import ToastRenderer from "./features/notifications/ToastRender";
 
 import { AuthProvider } from "@/context/AuthContext";
 import AwsConnectPage from "./features/aws/AwsConnectPage";
+import DemoDashboard from "./features/dashboard/DemoDashboard";
+import DemoAnalytics from "./features/cloud/analytics/DemoAnalytics";
 
 function App() {
 
@@ -65,10 +67,16 @@ function App() {
               }
             />
 
-            <Route
-          path="/demo"
-           element={<Dashboard />}
-            />
+         <Route
+  path="/demo"
+  element={<DemoDashboard />}
+
+  />
+
+   <Route
+  path="/demo-analytics"
+  element={<DemoAnalytics />}
+/>
 
             <Route
               path="/analytics"

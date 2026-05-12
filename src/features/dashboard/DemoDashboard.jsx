@@ -1,32 +1,21 @@
-
-
-
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+
+import "../../style/Dashboard.css";
 
 import Sidebar from "../../shared/Sidebar";
 
-import "../../style/Dashboard.css";
 import OptimizationSection from "./componant/OptimizationSection";
 import BudgetSection from "./componant/BudgetSection";
 import BottomSection from "./componant/BottomSection";
 import StatsSection from "./componant/StatsSection";
 import DashboardHeader from "./componant/DashboardHeader";
-import AlertPage from "../cloud/alert/AlertPage";
-import BudgetInput from "./componant/BudgetInput";
 
 import { useCostData } from "@/hooks/useCostData";
-import { useAuth } from "@/context/AuthContext";
 
-const Dashboard = () => {
-
-  const navigate = useNavigate();
+const DemoDashboard = () => {
 
   const [currency, setCurrency] = useState("INR");
   const [days, setDays] = useState(30);
-
-  const { token } = useAuth();
-  const isDemo = !token;
 
   const symbol = currency === "USD" ? "$" : "₹";
 
@@ -35,12 +24,8 @@ const Dashboard = () => {
     isLoading,
     isFetching,
     error,
-    refetch,
   } = useCostData(currency, days);
 
-  // =========================
-  // SAFE DATA (no crash)
-  // =========================
   const safeData = data || {
     totalCost: 0,
     percentageChange: 0,
@@ -50,15 +35,6 @@ const Dashboard = () => {
     potentialSavings: 0,
   };
 
-  const totalCost = safeData.totalCost;
-  const growth = safeData.percentageChange;
-  const insights = safeData.insights;
-  const monthlyBudget = safeData.monthlyBudget;
-  const potentialSavings = safeData.potentialSavings;
-
-  // =========================
-  // SERVICE BREAKDOWN (memo)
-  // =========================
   const serviceList = useMemo(() => {
 
     const map = {};
@@ -77,31 +53,20 @@ const Dashboard = () => {
 
   }, [safeData.dailyData]);
 
-
-console.log("TOKEN:", token);
-console.log("IS DEMO:", isDemo);
-
-  // =========================
-  // ERROR STATE
-  // =========================
   if (error) {
     return (
-      <div className="app-bg flex min-h-screen text-red-400 items-center justify-center">
+      <div className="app-bg min-h-screen flex items-center justify-center text-red-400">
         {error.message}
       </div>
     );
   }
 
-  // =========================
-  // MAIN UI (NO BLOCKING)
-  // =========================
   return (
     <div className="app-bg flex min-h-screen text-white">
 
-      {/* <Sidebar /> */}
-    
-      {!isDemo && <Sidebar />}
-      <div className="flex-1 p-12 space-y-12">
+      <Sidebar />
+
+      <div className="flex-1 p-12">
 
         <DashboardHeader
           currency={currency}
@@ -110,51 +75,44 @@ console.log("IS DEMO:", isDemo);
           setDays={setDays}
         />
 
-        {/* Initial lightweight loader only if no data */}
         {!data && isLoading && (
-          <div className="text-center text-gray-400">
-            Loading dashboard...
+          <div className="text-center text-gray-400 mt-10">
+            Loading demo dashboard...
           </div>
         )}
 
-        {/* Background refresh indicator */}
         {data && isFetching && (
-          <div className="text-sm text-gray-400">
-            Updating data...
+          <div className="text-sm text-gray-400 mt-4">
+            Updating demo...
           </div>
         )}
 
-        {/* MAIN CONTENT */}
         {data && (
-          <>
-           {!isDemo && <BudgetInput onSaved={refetch} />}
+          <div className="space-y-12 mt-8">
 
             <StatsSection
-              totalCost={totalCost}
-              growth={growth}
+              totalCost={safeData.totalCost}
+              growth={safeData.percentageChange}
               symbol={symbol}
-              monthlyBudget={monthlyBudget}
-              potentialSavings={potentialSavings}
-              isDemo={isDemo}
+              monthlyBudget={safeData.monthlyBudget}
+              potentialSavings={safeData.potentialSavings}
+              isDemo={true}
             />
 
             <OptimizationSection data={safeData} />
 
-            {/* <AlertPage /> */}
-
-            {!isDemo && <AlertPage />}
-
             <BudgetSection
-              totalCost={totalCost}
+              totalCost={safeData.totalCost}
               symbol={symbol}
-              monthlyBudget={monthlyBudget}
+              monthlyBudget={safeData.monthlyBudget}
             />
 
             <BottomSection
               services={serviceList}
-              recommendations={insights}
+              recommendations={safeData.insights}
             />
-          </>
+
+          </div>
         )}
 
       </div>
@@ -162,4 +120,4 @@ console.log("IS DEMO:", isDemo);
   );
 };
 
-export default Dashboard;
+export default DemoDashboard;

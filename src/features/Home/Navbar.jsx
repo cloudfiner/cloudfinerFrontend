@@ -101,7 +101,7 @@ const Navbar = () => {
           Login
         </button>
 
-        {/* 🔥 CONNECT AWS */}
+        {/*  CONNECT AWS */}
         <button
           onClick={() => {
             clearTokens(); // clean state
@@ -113,11 +113,11 @@ const Navbar = () => {
           Connect AWS
         </button>
 
-        {/* 🔥 TRY DEMO */}
+        {/*  TRY DEMO */}
         <button
           onClick={() => {
             clearTokens(); // remove token → demo mode
-            navigate("/dashboard");
+            navigate("/demo");
           }}
           className="btn-primary"
         >
