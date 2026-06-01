@@ -53,7 +53,10 @@ const Hero = () => {
           </button>
 
           <button
-            onClick={handleDemo}
+          onClick={() => {
+            clearTokens(); // remove token → demo mode
+            navigate("/demo");
+          }}
             className="capsule-btn border border-white/40 text-white hover:bg-white/10"
           >
             Try Demo
