@@ -28,6 +28,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import AwsConnectPage from "./features/aws/AwsConnectPage";
 import DemoDashboard from "./features/dashboard/DemoDashboard";
 import DemoAnalytics from "./features/cloud/analytics/DemoAnalytics";
+import DemoAwsConnectPage from "./features/aws/DemoAwsConnectPage";
 
 function App() {
 
@@ -56,6 +57,11 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+  path="/demo/connect-aws"
+  element={<DemoAwsConnectPage />}
+/>
 
             {/* USER */}
             <Route

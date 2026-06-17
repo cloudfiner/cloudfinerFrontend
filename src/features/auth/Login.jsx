@@ -54,14 +54,14 @@ const Login = () => {
         throw new Error("Token missing from response");
       }
 
-      // ✅ normalize roles
+      //  normalize roles
       const rolesArr = Array.isArray(roles) ? roles : [roles];
       const role = rolesArr[0];
 
-      // ✅ set auth
+      //  set auth
       login(accessToken, role);
 
-      // ✅ FIX: delay navigation (important)
+      //  FIX: delay navigation (important)
       setTimeout(() => {
         if (rolesArr.includes("ROLE_ADMIN")) {
           navigate("/admin", { replace: true });

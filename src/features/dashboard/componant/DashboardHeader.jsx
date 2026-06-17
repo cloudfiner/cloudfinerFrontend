@@ -17,7 +17,7 @@ const DashboardHeader = ({
   const dayOptions = [1, 7, 30, 90];
   const [openProfile, setOpenProfile] = useState(false);
 
-  // 🔥 AWS connection state
+  //  AWS connection state
   const [awsConnected, setAwsConnected] = useState(false);
 
   useEffect(() => {
@@ -25,11 +25,11 @@ const DashboardHeader = ({
     setAwsConnected(status === "true");
   }, []);
 
-  // 🔥 detect demo vs real
+  //  detect demo vs real
   const token = getAccessToken();
   const isDemo = !token;
 
-  // 🔥 dynamic user email
+  //  dynamic user email
   let userEmail = "demo@cloudfiner.com";
 
   if (token) {
@@ -73,13 +73,26 @@ const DashboardHeader = ({
           <BellNotification />
 
           {/* AWS CONNECT BUTTON */}
-        <button
-  onClick={() => navigate("/connect-aws")}
-  className={`aws-btn ${awsConnected ? "connected" : ""}`}
+       
+<button
+  onClick={() => {
+    if (isDemo) {
+      navigate("/demo/connect-aws");
+    } else {
+      navigate("/connect-aws");
+    }
+  }}
+  className={`aws-btn ${awsConnected && !isDemo ? "connected" : ""}`}
 >
   <span className="dot"></span>
-  {awsConnected ? "AWS Connected" : "Connect AWS"}
+
+  {isDemo
+    ? "Connect AWS"
+    : awsConnected
+      ? "AWS Connected"
+      : "Connect AWS"}
 </button>
+
 {/* Currency */}
 <div className="currency-toggle">
   <button
